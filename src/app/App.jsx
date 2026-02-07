@@ -1,19 +1,49 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "../components/common/Navbar";
+import ProtectedRoute from "../routes/ProtectedRoute";
 
-function App() {
+import Login from "../pages/Login";
+import Dashboard from "../pages/Dashboard";
+import Products from "../pages/Products";
+import Transactions from "../pages/Transactions";
 
-  console.log("Firebase Project ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
-
+export default function App() {
   return (
-    <>
-      <div className="min-h-screen bg-gray-50 p-6">
-        <h1 className="text-2xl font-semibold">InventoryPro</h1>
-        <p className="text-gray-600 mt-2">
-          Firebase & Tailwind setup complete ✅
-        </p>
-      </div>
-    </>
+    <BrowserRouter>
+      <Navbar />
+
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <Products />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <Transactions />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
