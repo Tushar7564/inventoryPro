@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,10 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if (user) {
-    navigate("/");
-  }
+  // ✅ Navigate only AFTER render
+  useEffect(() => {
+    if (user) navigate("/", { replace: true });
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err) {
       setError("Login failed. Check email/password.");
     } finally {
@@ -73,7 +74,7 @@ export default function Login() {
 
           <button
             disabled={submitting}
-            className="w-full bg-red-900 text-white rounded py-2 font-medium disabled:opacity-60"
+            className="w-full bg-gray-900 text-white rounded py-2 font-medium disabled:opacity-60"
           >
             {submitting ? "Signing in..." : "Sign In"}
           </button>
