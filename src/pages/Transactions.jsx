@@ -8,8 +8,11 @@ import {
   uniqueReasons,
   withinDateRange,
 } from "../utils/transactionHelpers";
+import { useAuth } from "../context/AuthContext";
 
 export default function Transactions() {
+  const { user, authLoading } = useAuth();
+
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,22 +29,30 @@ export default function Transactions() {
   const pageSize = 20;
 
   async function load() {
+    if (!user?.uid) return;
+
     setError("");
     setLoading(true);
     try {
-      const data = await getRecentTransactions(200);
+      // ✅ pass uid (Module 7)
+      const data = await getRecentTransactions(user.uid, 200);
       setTransactions(data);
     } catch (e) {
       console.error(e);
       setError(e?.message || "Failed to load transactions");
+      setTransactions([]);
     } finally {
       setLoading(false);
     }
   }
 
+  // ✅ wait for auth restore before reading Firestore
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user]);
 
   const reasons = useMemo(() => uniqueReasons(transactions), [transactions]);
 
@@ -86,7 +97,8 @@ export default function Transactions() {
 
         <button
           onClick={load}
-          className="border rounded px-3 py-2 text-sm bg-white"
+          disabled={authLoading || !user}
+          className="border rounded px-3 py-2 text-sm bg-white disabled:opacity-50"
         >
           Refresh
         </button>
@@ -113,7 +125,9 @@ export default function Transactions() {
         onClear={clearFilters}
       />
 
-      {loading ? (
+      {authLoading ? (
+        <p className="mt-4 text-gray-600">Checking session...</p>
+      ) : loading ? (
         <p className="mt-4 text-gray-600">Loading...</p>
       ) : filtered.length === 0 ? (
         <p className="mt-4 text-gray-600">No matching transactions.</p>

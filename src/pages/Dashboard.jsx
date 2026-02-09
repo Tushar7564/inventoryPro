@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useMemo, useState } from "react";
 import { fetchDashboardData } from "../firebase/dashboardServices";
 import StatsCard from "../components/dashboard/StatsCard";
@@ -9,12 +10,17 @@ export default function Dashboard() {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { user, authLoading } = useAuth();
 
   async function load() {
+    if (!user?.uid) return;
+
     setError("");
     setLoading(true);
     try {
-      const { products, recentTransactions } = await fetchDashboardData();
+      const { products, recentTransactions } = await fetchDashboardData(
+        user.uid,
+      );
       setProducts(products);
       setRecentTransactions(recentTransactions);
     } catch (e) {
@@ -26,8 +32,11 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user]);
 
   const stats = useMemo(() => {
     const totalProducts = products.length;
@@ -70,7 +79,8 @@ export default function Dashboard() {
 
         <button
           onClick={load}
-          className="border rounded px-3 py-2 text-sm bg-white"
+          disabled={authLoading || !user}
+          className="border rounded px-3 py-2 text-sm bg-white disabled:opacity-50"
         >
           Refresh
         </button>

@@ -36,7 +36,7 @@ export default function Products() {
     setError("");
     setLoading(true);
     try {
-      const data = await getAllProducts();
+      const data = await getAllProducts(user.uid);
       setProducts(data);
     } catch (e) {
       console.error("Failed to load products:", e);
@@ -52,19 +52,19 @@ export default function Products() {
   }, []);
 
   async function handleAdd(product) {
-    await addProduct(product);
+    await addProduct(user.uid, product);
     await loadProducts();
   }
 
   async function handleUpdate(product) {
-    await updateProduct(editing.id, product);
+    await updateProduct(user.uid, editing.id, product);
     setEditing(null);
     await loadProducts();
   }
 
   async function handleDelete(id) {
     if (confirm("Delete this product?")) {
-      await deleteProduct(id);
+      await deleteProduct(user.uid, id);
       await loadProducts();
     }
   }
@@ -80,6 +80,7 @@ export default function Products() {
     try {
       setError("");
       await createStockTransaction({
+        uid: user.uid,
         productId: movement.product.id,
         type: movement.type,
         quantity,
