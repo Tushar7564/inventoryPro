@@ -45,7 +45,7 @@ export async function deleteProduct(id) {
     await deleteDoc(productDoc);
 }
 
-export async function getRecentTransactions(max = 50) {
+export async function getRecentTransactions(max = 200) {
     const q = query(transactionsRef, orderBy("createdAt", "desc"), limit(max));
     const snapshot = await getDocs(q);
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
