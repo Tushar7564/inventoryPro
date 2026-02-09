@@ -1,4 +1,10 @@
-export default function ProductTable({ products, onEdit, onDelete }) {
+export default function ProductTable({
+  products,
+  onEdit,
+  onDelete,
+  onStockIn,
+  onStockOut,
+}) {
   return (
     <table className="w-full border mt-4 text-sm">
       <thead className="bg-gray-100">
@@ -23,6 +29,12 @@ export default function ProductTable({ products, onEdit, onDelete }) {
               </button>
               <button onClick={() => onDelete(p.id)} className="text-red-600">
                 Delete
+              </button>
+              <button onClick={() => onStockIn(p)} className="text-green-700">
+                Stock In
+              </button>
+              <button onClick={() => onStockOut(p)} className="text-orange-700">
+                Stock Out
               </button>
             </td>
           </tr>
