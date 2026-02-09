@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   getAllProducts,
   addProduct,
@@ -10,6 +10,13 @@ import ProductTable from "../components/products/ProductTable";
 import StockMovementForm from "../components/transactions/StockMovementForm";
 import { createStockTransaction } from "../firebase/firestoreServices";
 import { useAuth } from "../context/AuthContext";
+import ProductsToolbar from "../components/products/ProductsToolbar";
+import Pagination from "../components/common/Pagination";
+import {
+  matchesSearch,
+  uniqueCategories,
+  normalize,
+} from "../utils/productHelpers";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -19,6 +26,11 @@ export default function Products() {
   const { user } = useAuth();
   const [movement, setMovement] = useState(null);
   // movement = { product, type }
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [sort, setSort] = useState("updated_desc");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   async function loadProducts() {
     setError("");
@@ -83,6 +95,53 @@ export default function Products() {
     }
   }
 
+  const categories = useMemo(() => uniqueCategories(products), [products]);
+
+  const existingSkus = useMemo(
+    () => products.map((p) => normalize(p.sku)),
+    [products],
+  );
+
+  const filtered = useMemo(() => {
+    let list = products.filter((p) => matchesSearch(p, search));
+
+    if (category) {
+      list = list.filter((p) => (p.category || "").trim() === category);
+    }
+
+    if (sort === "name_asc") {
+      list = [...list].sort((a, b) =>
+        (a.name || "").localeCompare(b.name || ""),
+      );
+    } else if (sort === "qty_asc") {
+      list = [...list].sort(
+        (a, b) => Number(a.quantity || 0) - Number(b.quantity || 0),
+      );
+    } else if (sort === "qty_desc") {
+      list = [...list].sort(
+        (a, b) => Number(b.quantity || 0) - Number(a.quantity || 0),
+      );
+    } else {
+      // updated_desc: fallback
+      list = [...list].sort((a, b) => {
+        const ta = a.updatedAt?.seconds || 0;
+        const tb = b.updatedAt?.seconds || 0;
+        return tb - ta;
+      });
+    }
+
+    return list;
+  }, [products, search, category, sort]);
+
+  const paged = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, page]);
+
+  useEffect(() => {
+    setPage(1); // reset page when filters change
+  }, [search, category, sort]);
+
   return (
     <div className="max-w-6xl mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Products</h1>
@@ -93,23 +152,44 @@ export default function Products() {
         </div>
       )}
 
+      <ProductsToolbar
+        search={search}
+        onSearch={setSearch}
+        category={category}
+        onCategory={setCategory}
+        categories={categories}
+        sort={sort}
+        onSort={setSort}
+      />
+
       <ProductForm
         onSubmit={editing ? handleUpdate : handleAdd}
         initialData={editing}
         onCancel={() => setEditing(null)}
+        existingSkus={existingSkus}
       />
 
       {loading ? (
         <p className="mt-4 text-gray-600">Loading products...</p>
       ) : (
-        <ProductTable
-          products={products}
-          onEdit={setEditing}
-          onDelete={handleDelete}
-          onStockIn={openStockIn}
-          onStockOut={openStockOut}
-        />
+        <>
+          <ProductTable
+            products={paged}
+            onEdit={setEditing}
+            onDelete={handleDelete}
+            onStockIn={openStockIn}
+            onStockOut={openStockOut}
+          />
+
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={filtered.length}
+            onPageChange={setPage}
+          />
+        </>
       )}
+
       {movement && (
         <StockMovementForm
           product={movement.product}
