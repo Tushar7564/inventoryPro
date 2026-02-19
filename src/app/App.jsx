@@ -3,6 +3,7 @@ import Navbar from "../components/common/Navbar";
 import ProtectedRoute from "../routes/ProtectedRoute";
 
 import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 import Dashboard from "../pages/Dashboard";
 import Products from "../pages/Products";
 import Transactions from "../pages/Transactions";
@@ -14,6 +15,8 @@ export default function App() {
 
       <Routes>
         <Route path="/login" element={<Login />} />
+
+        <Route path="/signup" element={<Signup />} />
 
         <Route
           path="/"

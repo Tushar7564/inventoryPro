@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -79,6 +80,14 @@ export default function Login() {
             {submitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <Link
+          to="/signup"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-gray-900 transition"
+        >
+          Create an account
+          <span className="text-base">→</span>
+        </Link>
       </div>
     </div>
   );
