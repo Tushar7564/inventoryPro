@@ -117,9 +117,9 @@ src/
 │
 └── index.css
 
-**Firestore Data Model**
+Firestore Data Model
 
-*products*
+products
 Each product document stores:
  - ownerId
  - name
@@ -131,7 +131,7 @@ Each product document stores:
  - createdAt
  - updatedAt
 
-*transactions*
+transactions
 Each transaction document stores:
  - ownerId
  - productId
@@ -144,15 +144,15 @@ Each transaction document stores:
  - createdAt
  - createdBy
 
-**Security Design**
+Security Design
 This project uses Firestore rules to ensure each user can only access their own data.
 
-**Rule Strategy**
+Rule Strategy
  - ownerId is stored on every document
  - reads/writes are allowed only if request.auth.uid === ownerId
 This prevents cross-user access and makes the app safer for multi-user scenarios.
 
-**Setup Instructions**
+Setup Instructions
 1. Clone the repository
 ```Bash
 git clone <your-repo-link>
