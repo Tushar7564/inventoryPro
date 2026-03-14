@@ -153,9 +153,10 @@ Rule Strategy
 This prevents cross-user access and makes the app safer for multi-user scenarios.
 
 Setup Instructions
+
 1. Clone the repository
 ```Bash
-git clone <your-repo-link>
+git clone https://github.com/Tushar7564/inventoryPro.git
 cd inventorypro
 ```
 
