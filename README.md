@@ -116,10 +116,11 @@ src/
 │   └── transactionHelpers.js
 │
 └── index.css
+```
 
-Firestore Data Model
+## Firestore Data Model
 
-products
+### products
 Each product document stores:
  - ownerId
  - name
@@ -131,7 +132,7 @@ Each product document stores:
  - createdAt
  - updatedAt
 
-transactions
+### transactions
 Each transaction document stores:
  - ownerId
  - productId
@@ -144,28 +145,28 @@ Each transaction document stores:
  - createdAt
  - createdBy
 
-Security Design
+## Security Design
 This project uses Firestore rules to ensure each user can only access their own data.
 
-Rule Strategy
+### Rule Strategy
  - ownerId is stored on every document
  - reads/writes are allowed only if request.auth.uid === ownerId
 This prevents cross-user access and makes the app safer for multi-user scenarios.
 
-Setup Instructions
+## Setup Instructions
 
-1. Clone the repository
+### 1. Clone the repository
 ```Bash
 git clone https://github.com/Tushar7564/inventoryPro.git
 cd inventorypro
 ```
 
-2. Install dependencies
+### 2. Install dependencies
 ```Bash
 npm install
 ```
 
-3. Create environment variables
+### 3. Create environment variables
 Create a .env file in the project root:
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
@@ -176,21 +177,21 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
 
-4. Start the development server
+### 4. Start the development server
 ```Bash
 npm run dev
 ```
 
-**Firebase Setup**
+## Firebase Setup
 
-**Authentication**
+### Authentication
 Enable the following in Firebase Console:
  - Email/Password Authentication
 
-**Firestore**
+### Firestore
 Create a Firestore database and configure rules.
 
-**Required Firestore Rules**
+### Required Firestore Rules
 
 ```javascript
 rules_version = '2';
@@ -226,7 +227,7 @@ service cloud.firestore {
 }
 ```
 
-**Firestore Indexes**
+## Firestore Indexes
 
 This project may require composite indexes for queries combining:
  - ownerId
@@ -237,26 +238,26 @@ Example:
 
 Firebase will automatically provide an index creation link when needed.
 
-**Key Engineering Decisions**
+## Key Engineering Decisions
 
-**1. Context API over Redux**
+### 1. Context API over Redux
 The app only needs lightweight global auth state, so Context API keeps the architecture simple and avoids unnecessary complexity.
 
-**2. Firestore Service Layer**
+### 2. Firestore Service Layer
 All Firestore operations are separated into service files, keeping UI components cleaner and making the code easier to maintain.
 
-**3. Atomic Stock Updates**
+### 3. Atomic Stock Updates
 Stock movement is handled using Firestore transactions to ensure:
  - quantity update and transaction log are written together
  - stock cannot go negative accidentally
 
-**4. Denormalized Transaction Data**
+### 4. Denormalized Transaction Data
 Transaction documents store product name and SKU directly to preserve historical accuracy even if product details change later.
 
-**5. Client-side Search / Filter / Pagination**
+### 5. Client-side Search / Filter / Pagination
 For this scale of application, client-side handling keeps the UI responsive and avoids premature over-engineering.
 
-**Current Modules Completed**
+## Current Modules Completed
  - Module 1: Authentication + Protected Routes
  - Module 2: Product CRUD
  - Module 3: Stock In / Stock Out + Transaction Logging
@@ -265,7 +266,7 @@ For this scale of application, client-side handling keeps the UI responsive and 
  - Module 6: Transactions UX (search, filter, date range, pagination)
  - Module 7: Security Hardening with per-user ownership
 
-**Screenshots**
+## Screenshots
 
 ### Login Page
 ![Login Page](./src/assets/Login.png)
@@ -280,7 +281,7 @@ For this scale of application, client-side handling keeps the UI responsive and 
 ![Transactions](./src/assets/Transactions.png)
 
 
-**Resume / Interview Value**
+## Resume / Interview Value
  - This project demonstrates:
  - frontend architecture in React
  - Firebase Authentication integration
@@ -291,7 +292,7 @@ For this scale of application, client-side handling keeps the UI responsive and 
  - dashboard design thinking
  - user-based data security
 
-**Good interview talking points**
+### Good interview talking points
  - Why Context API was enough
  - How stock movement was made atomic
  - Why ownerId was added for security
@@ -299,7 +300,7 @@ For this scale of application, client-side handling keeps the UI responsive and 
  - How low-stock alerts were implemented
  - How Firestore indexes were handled
 
-**Future Improvements**
+## Future Improvements
  - Role-based access (admin / staff)
  - CSV export for reports
  - Dark mode
@@ -308,8 +309,8 @@ For this scale of application, client-side handling keeps the UI responsive and 
  - Monthly analytics charts
  - Inventory valuation trends
 
-**Author**
-Tushar
+## Author
+**Tushar**
 Frontend / Full-Stack Developer
-GitHub: https://github.com/Tushar7564
-LinkedIn: https://www.linkedin.com/in/tushar-4962891ba/
+ - 🔗 GitHub: https://github.com/Tushar7564
+ - 💼 LinkedIn: https://www.linkedin.com/in/tushar-4962891ba/
