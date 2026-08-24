@@ -309,6 +309,10 @@ For this scale of application, client-side handling keeps the UI responsive and 
  - Monthly analytics charts
  - Inventory valuation trends
 
+**Test**
+Id: test@inventorypro.com
+Pass: Test@12345
+
 ## Author
 **Tushar**
 Frontend / Full-Stack Developer
