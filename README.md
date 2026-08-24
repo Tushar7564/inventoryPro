@@ -314,3 +314,4 @@ For this scale of application, client-side handling keeps the UI responsive and 
 Frontend / Full-Stack Developer
  - 🔗 GitHub: https://github.com/Tushar7564
  - 💼 LinkedIn: https://www.linkedin.com/in/tushar-4962891ba/
+ - 🔗 Live: https://inventory-pro-ten-gamma.vercel.app/login
